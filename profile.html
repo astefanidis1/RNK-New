@@ -37,12 +37,42 @@
     </header>
 
     <main>
-        <h1 id="username">User Name</h1>
+        <div>
+            <label for="display-name">Name:</label>
+            <h1 id="display-name"></h1>
+        </div>
+        <div>
+            <label for="display-username">Username:</label>
+            <h2 id="display-username"></h2>
+        </div>
+        <div>
+            <label for="display-email">Email:</label>
+            <h3 id="display-email"></h3>
+        </div>
+        <div>
+            <label for="display-bio">Bio:</label>
+            <p id="display-bio"></p>
+        </div>
         <img id="profile-picture" src="images/defaultpropic.jpg" alt="Profile Picture" width="150" height="150">
         <button onclick="toggleEditProfile()">Edit Profile</button>
         <div id="edit-profile-form" style="display:none;">
-            <form>
+            <form id="edit-profile-form">
+                <input type="text" id="new-name" placeholder="New Name">
                 <input type="text" id="new-username" placeholder="New Username">
+                <input type="email" id="new-email" placeholder="New Email">
+                <textarea id="new-bio" placeholder="New Bio"></textarea>
+                <label>
+                    <input type="checkbox" id="hide-name"> Hide Name
+                </label>
+                <label>
+                    <input type="checkbox" id="hide-username"> Hide Username
+                </label>
+                <label>
+                    <input type="checkbox" id="hide-email"> Hide Email
+                </label>
+                <label>
+                    <input type="checkbox" id="hide-bio"> Hide Bio
+                </label>
                 <button type="submit">Save</button>
             </form>
             <form id="profile-picture-form">
@@ -64,7 +94,7 @@
     <script src="scripts.js"></script>
     <script>
         function toggleEditProfile() {
-            const editProfileDiv = document.getElementById('edit-profile');
+            const editProfileDiv = document.getElementById('edit-profile-form');
             if (editProfileDiv.style.display === 'none') {
                 editProfileDiv.style.display = 'block';
             } else {

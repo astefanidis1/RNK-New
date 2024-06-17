@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     console.log('User logged in:', userCredential.user);
-                    window.location.href = 'profile.html'; // Redirect to profile page
+                    window.location.href = 'rankingsetup.html'; // Redirect to ranking setup page
                 })
                 .catch((error) => {
                     console.error('Error logging in:', error);
@@ -76,94 +76,137 @@ document.addEventListener('DOMContentLoaded', () => {
                 const userId = user.uid;
                 db.collection('users').doc(userId).get().then((doc) => {
                     if (doc.exists) {
-                        document.getElementById('username').textContent = doc.data().username || user.email;
-                        if (doc.data().profilePicture) {
-                            document.getElementById('profile-picture').src = doc.data().profilePicture;
+                        const userData = doc.data();
+                        document.getElementById('display-name').textContent = userData.name || '';
+                        document.getElementById('display-username').textContent = userData.username || '';
+                        document.getElementById('display-email').textContent = user.email;
+                        document.getElementById('display-bio').textContent = userData.bio || '';
+                        if (userData.profilePicture) {
+                            document.getElementById('profile-picture').src = userData.profilePicture;
                         }
+                        toggleVisibility('display-name', userData.hideName);
+                        toggleVisibility('display-username', userData.hideUsername);
+                        toggleVisibility('display-email', userData.hideEmail);
+                        toggleVisibility('display-bio', userData.hideBio);
                     } else {
-                        // If no username is set, use email
-                        document.getElementById('username').textContent = user.email;
+                        console.log('No such document!');
                     }
+                }).catch((error) => {
+                    console.error('Error getting document:', error);
                 });
-
-                // Handle profile update
-                const editProfileForm = document.getElementById('edit-profile-form');
-                if (editProfileForm) {
-                    editProfileForm.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        const newUsername = document.getElementById('new-username').value;
-                        db.collection('users').doc(userId).set({ username: newUsername }, { merge: true })
-                            .then(() => {
-                                alert('Username updated successfully!');
-                                document.getElementById('username').textContent = newUsername;
-                                toggleEditProfile(); // Hide the form after saving
-                            })
-                            .catch((error) => {
-                                console.error('Error updating profile:', error);
-                                alert(`Profile update error: ${error.message}`);
-                            });
-                    });
-                }
-
-                // Handle profile picture update
-                const profilePictureForm = document.getElementById('profile-picture-form');
-                if (profilePictureForm) {
-                    profilePictureForm.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        const file = document.getElementById('profile-picture-input').files[0];
-                        if (file) {
-                            const storageRef = storage.ref();
-                            const profilePicRef = storageRef.child(`profilePictures/${userId}`);
-                            profilePicRef.put(file).then(() => {
-                                profilePicRef.getDownloadURL().then((url) => {
-                                    db.collection('users').doc(userId).set({ profilePicture: url }, { merge: true })
-                                        .then(() => {
-                                            alert('Profile picture updated successfully!');
-                                            document.getElementById('profile-picture').src = url;
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error updating profile picture:', error);
-                                            alert(`Profile picture update error: ${error.message}`);
-                                        });
-                                });
-                            }).catch((error) => {
-                                console.error('Error uploading profile picture:', error);
-                                alert(`Profile picture upload error: ${error.message}`);
-                            });
-                        }
-                    });
-                }
             }
         });
     }
 
-    // Protect Ranking Setup Page
-    if (window.location.pathname.endsWith('/rankingsetup.html')) {
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = 'login.html'; // Redirect to login if not authenticated
-            } else {
-                // Additional logic for ranking setup page can go here
-                console.log('User is authenticated for ranking setup.');
+    function toggleVisibility(elementId, hide) {
+        const element = document.getElementById(elementId);
+        console.log(`${hide ? 'Hiding' : 'Showing'} ${elementId}`);
+        if (hide) {
+            element.style.display = 'none';
+        } else {
+            element.style.display = 'block';
+        }
+    }
+
+    // Handle profile update
+    const editProfileForm = document.getElementById('edit-profile-form');
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newUsername = document.getElementById('new-username').value;
+            const newName = document.getElementById('new-name').value;
+            const newEmail = document.getElementById('new-email').value;
+            const newBio = document.getElementById('new-bio').value;
+            const hideName = document.getElementById('hide-name').checked;
+            const hideUsername = document.getElementById('hide-username').checked;
+            const hideEmail = document.getElementById('hide-email').checked;
+            const hideBio = document.getElementById('hide-bio').checked;
+
+            const userId = auth.currentUser.uid;
+
+            db.collection('users').doc(userId).set({
+                username: newUsername,
+                name: newName,
+                email: newEmail,
+                bio: newBio,
+                hideName: hideName,
+                hideUsername: hideUsername,
+                hideEmail: hideEmail,
+                hideBio: hideBio
+            }, { merge: true })
+                .then(() => {
+                    alert('Profile updated successfully!');
+                    document.getElementById('display-username').textContent = newUsername;
+                    document.getElementById('display-name').textContent = newName;
+                    document.getElementById('display-email').textContent = newEmail;
+                    document.getElementById('display-bio').textContent = newBio;
+                    toggleVisibility('display-name', hideName);
+                    toggleVisibility('display-username', hideUsername);
+                    toggleVisibility('display-email', hideEmail);
+                    toggleVisibility('display-bio', hideBio);
+                    toggleEditProfile(); // Hide the form after saving
+                })
+                .catch((error) => {
+                    console.error('Error updating profile:', error);
+                    alert(`Profile update error: ${error.message}`);
+                });
+        });
+    }
+
+    // Handle profile picture update
+    const profilePictureForm = document.getElementById('profile-picture-form');
+    if (profilePictureForm) {
+        profilePictureForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const file = document.getElementById('profile-picture-input').files[0];
+            if (file) {
+                const userId = auth.currentUser.uid;
+                const storageRef = storage.ref();
+                const profilePicRef = storageRef.child(`profilePictures/${userId}`);
+                profilePicRef.put(file).then(() => {
+                    profilePicRef.getDownloadURL().then((url) => {
+                        db.collection('users').doc(userId).set({ profilePicture: url }, { merge: true })
+                            .then(() => {
+                                alert('Profile picture updated successfully!');
+                                document.getElementById('profile-picture').src = url;
+                            })
+                            .catch((error) => {
+                                console.error('Error updating profile picture:', error);
+                                alert(`Profile picture update error: ${error.message}`);
+                            });
+                    });
+                }).catch((error) => {
+                    console.error('Error uploading profile picture:', error);
+                    alert(`Profile picture upload error: ${error.message}`);
+                });
             }
         });
     }
 });
 
+// Ranking Setup Page Protection
+if (window.location.pathname.endsWith('/rankingsetup.html')) {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (!user) {
+            window.location.href = 'login.html';
+        } else {
+            console.log('User is authenticated for ranking setup.');
+        }
+    });
+}
+
 let items = [];
 
-function addItems() {
-    const itemsInput = document.getElementById('items-input');
+function addItem() {
+    const itemInput = document.getElementById('item-input');
     const itemList = document.getElementById('item-list');
-    const newItems = itemsInput.value.split(/[\n,]+/).map(item => item.trim()).filter(item => item);
-    if (newItems.length) {
-        items = items.concat(newItems);
-        newItems.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item;
-            itemList.appendChild(li);
-        });
-        itemsInput.value = '';
+    const newItem = itemInput.value.trim();
+    if (newItem) {
+        items.push(newItem);
+        const li = document.createElement('li');
+        li.textContent = newItem;
+        itemList.appendChild(li);
+        itemInput.value = '';
         if (items.length > 1) {
             document.getElementById('start-ranking-button').style.display = 'block';
         }
@@ -171,7 +214,5 @@ function addItems() {
 }
 
 function startRanking() {
-    // Here you will implement the logic to start the ranking process
-    // For now, let's just log the items to be ranked
     console.log('Start ranking:', items);
 }
