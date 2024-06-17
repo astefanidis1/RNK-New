@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- Firebase Storage -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+    <script>
+        // Firebase configuration will be replaced by Webpack at build time
+        const firebaseConfig = {
+            apiKey: process.env.GOOGLE_API_KEY,
+            authDomain: "rnkalex-91ed5.firebaseapp.com",
+            projectId: "rnkalex-91ed5",
+            storageBucket: "rnkalex-91ed5.appspot.com",
+            messagingSenderId: "175286550484",
+            appId: "1:175286550484:web:bc03c310dcfd923fd02041",
+            measurementId: "G-4G3JWKCTS6"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+<body>
+    <header>
+        <button class="nav-button left" onclick="location.href='index.html'">Home</button>
+        <h1>RNK</h1>
+        <!-- Profile Button -->
+        <button class="nav-button right" onclick="location.href='profile.html'">My Profile</button>
+    </header>
+
+    <main>
+        <div>
+            <label for="display-name">Name:</label>
+            <h1 id="display-name"></h1>
+        </div>
+        <div>
+            <label for="display-username">Username:</label>
+            <h2 id="display-username"></h2>
+        </div>
+        <div>
+            <label for="display-email">Email:</label>
+            <h3 id="display-email"></h3>
+        </div>
+        <div>
+            <label for="display-bio">Bio:</label>
+            <p id="display-bio"></p>
+        </div>
+        <img id="profile-picture" src="images/defaultpropic.jpg" alt="Profile Picture" width="150" height="150">
+        <button onclick="toggleEditProfile()">Edit Profile</button>
+        <div id="edit-profile-form" style="display:none;">
+            <form id="edit-profile-form">
+                <input type="text" id="new-name" placeholder="New Name">
+                <input type="text" id="new-username" placeholder="New Username">
+                <input type="email" id="new-email" placeholder="New Email">
+                <textarea id="new-bio" placeholder="New Bio"></textarea>
+                <label>
+                    <input type="checkbox" id="hide-name"> Hide Name
+                </label>
+                <label>
+                    <input type="checkbox" id="hide-username"> Hide Username
+                </label>
+                <label>
+                    <input type="checkbox" id="hide-email"> Hide Email
+                </label>
+                <label>
+                    <input type="checkbox" id="hide-bio"> Hide Bio
+                </label>
+                <button type="submit">Save</button>
+            </form>
+            <form id="profile-picture-form">
+                <input type="file" id="profile-picture-input">
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+        <div id="personal-lists">
+            <h2>Your Ranked Lists</h2>
+            <ul>
+                <!-- Placeholder for ranking lists, to be populated by script -->
+                <li>Ranked List 1</li>
+                <li>Ranked List 2</li>
+            </ul>
+        </div>
+    </main>
+
+    <script src="scripts.js"></script>
+    <script>
+        function toggleEditProfile() {
+            const editProfileDiv = document.getElementById('edit-profile-form');
+            if (editProfileDiv.style.display === 'none') {
+                editProfileDiv.style.display = 'block';
+            } else {
+                editProfileDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
