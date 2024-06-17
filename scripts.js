@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
     // Function to handle errors
     function handleError(error) {
@@ -76,6 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 db.collection('users').doc(userId).get().then((doc) => {
                     if (doc.exists) {
                         document.getElementById('username').textContent = doc.data().username || user.email;
+                        if (doc.data().profilePicture) {
+                            document.getElementById('profile-picture').src = doc.data().profilePicture;
+                        }
                     } else {
                         // If no username is set, use email
                         document.getElementById('username').textContent = user.email;
@@ -100,7 +104,72 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                     });
                 }
+
+                // Handle profile picture update
+                const profilePictureForm = document.getElementById('profile-picture-form');
+                if (profilePictureForm) {
+                    profilePictureForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const file = document.getElementById('profile-picture-input').files[0];
+                        if (file) {
+                            const storageRef = storage.ref();
+                            const profilePicRef = storageRef.child(`profilePictures/${userId}`);
+                            profilePicRef.put(file).then(() => {
+                                profilePicRef.getDownloadURL().then((url) => {
+                                    db.collection('users').doc(userId).set({ profilePicture: url }, { merge: true })
+                                        .then(() => {
+                                            alert('Profile picture updated successfully!');
+                                            document.getElementById('profile-picture').src = url;
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error updating profile picture:', error);
+                                            alert(`Profile picture update error: ${error.message}`);
+                                        });
+                                });
+                            }).catch((error) => {
+                                console.error('Error uploading profile picture:', error);
+                                alert(`Profile picture upload error: ${error.message}`);
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    // Protect Ranking Setup Page
+    if (window.location.pathname.endsWith('/rankingsetup.html')) {
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'login.html'; // Redirect to login if not authenticated
+            } else {
+                // Additional logic for ranking setup page can go here
+                console.log('User is authenticated for ranking setup.');
             }
         });
     }
 });
+
+let items = [];
+
+function addItem() {
+    const itemInput = document.getElementById('item-input');
+    const itemList = document.getElementById('item-list');
+    const newItem = itemInput.value.trim();
+    if (newItem) {
+        items.push(newItem);
+        const li = document.createElement('li');
+        li.textContent = newItem;
+        itemList.appendChild(li);
+        itemInput.value = '';
+        if (items.length > 1) {
+            document.getElementById('start-ranking-button').style.display = 'block';
+        }
+    }
+}
+
+function startRanking() {
+    // Here you will implement the logic to start the ranking process
+    // For now, let's just log the items to be ranked
+    console.log('Start ranking:', items);
+}

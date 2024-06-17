@@ -7,27 +7,33 @@
     <link rel="stylesheet" href="styles.css">
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- Firebase Storage -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
     <script>
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyB2ZESO3lZYa6l0egD14-vDVj2LCdvdo9E",
-        authDomain: "rnkalex-91ed5.firebaseapp.com",
-        projectId: "rnkalex-91ed5",
-        storageBucket: "rnkalex-91ed5.appspot.com",
-        messagingSenderId: "175286550484",
-        appId: "1:175286550484:web:bc03c310dcfd923fd02041",
-        measurementId: "G-4G3JWKCTS6"
-      };
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2ZESO3lZYa6l0egD14-vDVj2LCdvdo9E",
+            authDomain: "rnkalex-91ed5.firebaseapp.com",
+            projectId: "rnkalex-91ed5",
+            storageBucket: "rnkalex-91ed5.appspot.com",
+            messagingSenderId: "175286550484",
+            appId: "1:175286550484:web:bc03c310dcfd923fd02041",
+            measurementId: "G-4G3JWKCTS6"
+        };
 
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
     </script>
 </head>
 <body>
     <header>
         <button class="nav-button left" onclick="location.href='index.html'">Home</button>
         <h1>RNK</h1>
+        <button class="nav-button right" onclick="location.href='login.html'">Login</button>
     </header>
 
     <main>

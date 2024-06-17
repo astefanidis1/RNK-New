@@ -9,6 +9,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- Firebase Storage -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
     <script>
       // Your web app's Firebase configuration
       const firebaseConfig = {
@@ -27,6 +31,7 @@
 </head>
 <body>
     <header>
+        <button class="nav-button left" onclick="location.href='index.html'">Home</button>
         <h1>RNK</h1>
         <!-- Profile Button -->
         <button class="nav-button right" onclick="location.href='profile.html'">My Profile</button>
@@ -40,7 +45,7 @@
 
         <section>
             <!-- Button for sign in/up -->
-            <button onclick="location.href='login.html'">Start Ranking!</button>
+            <button onclick="location.href='rankingsetup.html'">Start Ranking!</button>
             <!-- Eventually, this will be a script to handle sign in/up and then redirect to ranking page -->
         </section>
     </main>
