@@ -152,16 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let items = [];
 
-function addItem() {
-    const itemInput = document.getElementById('item-input');
+function addItems() {
+    const itemsInput = document.getElementById('items-input');
     const itemList = document.getElementById('item-list');
-    const newItem = itemInput.value.trim();
-    if (newItem) {
-        items.push(newItem);
-        const li = document.createElement('li');
-        li.textContent = newItem;
-        itemList.appendChild(li);
-        itemInput.value = '';
+    const newItems = itemsInput.value.split(/[\n,]+/).map(item => item.trim()).filter(item => item);
+    if (newItems.length) {
+        items = items.concat(newItems);
+        newItems.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            itemList.appendChild(li);
+        });
+        itemsInput.value = '';
         if (items.length > 1) {
             document.getElementById('start-ranking-button').style.display = 'block';
         }

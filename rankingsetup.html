@@ -36,8 +36,8 @@
     <main>
         <h1>Start Ranking</h1>
         <form id="ranking-form">
-            <input type="text" id="item-input" placeholder="Enter an item">
-            <button type="button" onclick="addItem()">Add Item</button>
+            <textarea id="items-input" placeholder="Enter items to rank, separated by commas or new lines"></textarea>
+            <button type="button" onclick="addItems()">Add Items</button>
         </form>
         <ul id="item-list"></ul>
         <button id="start-ranking-button" style="display:none;" onclick="startRanking()">Start Ranking</button>
